@@ -2,22 +2,22 @@ FROM lambci/lambda:build-provided
 
 ENV CMAKE_VERSION 3.13.4
 
+RUN yum install -y iso-codes && \
+    curl -O http://vault.centos.org/6.5/SCL/x86_64/scl-utils/scl-utils-20120927-11.el6.centos.alt.x86_64.rpm && \
+    curl -O http://vault.centos.org/6.5/SCL/x86_64/scl-utils/scl-utils-build-20120927-11.el6.centos.alt.x86_64.rpm && \
+    curl -O http://mirror.centos.org/centos/6/extras/x86_64/Packages/centos-release-scl-rh-2-3.el6.centos.noarch.rpm && \
+    curl -O http://mirror.centos.org/centos/6/extras/x86_64/Packages/centos-release-scl-7-3.el6.centos.noarch.rpm && \
+    rpm -Uvh *.rpm && \
+    yum install -y devtoolset-7-gcc-c++ devtoolset-7-make devtoolset-7-build && \
+    scl enable devtoolset-7 bash && \
+    gcc --version # gcc (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5) && \
+    g++ --version # g++ (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5)
+
 RUN yum remove cmake -y && \
     yum install wget -y && \
     wget https://cmake.org/files/v3.13/cmake-${CMAKE_VERSION}.tar.gz && \
     tar -xvzf cmake-${CMAKE_VERSION}.tar.gz && \
     cd cmake-${CMAKE_VERSION} && \
-    ./bootstrap && make && make install && \
-    pip install conan
+    ./bootstrap && make && make install
 
-RUN wget https://releases.llvm.org/7.0.1/llvm-7.0.1.src.tar.xz && \
-    tar -xvf llvm-7.0.1.src.tar.xz && \
-    wget https://releases.llvm.org/7.0.1/cfe-7.0.1.src.tar.xz && \
-    tar -xvf cfe-7.0.1.src.tar.xz && \
-    mv cfe-7.0.1.src llvm-7.0.1.src/tools/clang && \
-    wget https://releases.llvm.org/7.0.1/compiler-rt-7.0.1.src.tar.xz && \
-    tar -xvf compiler-rt-7.0.1.src.tar.xz && \
-    mv compiler-rt-7.0.1.src llvm-7.0.1.src/projects/compiler-rt && \
-    mkdir llvm-7.0.1.src/build && \
-    cd llvm-7.0.1.src/build && \
-    cmake .. && cmake --build . && cmake --build . --target install
+RUN pip install conan
