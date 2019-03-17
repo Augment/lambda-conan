@@ -18,6 +18,9 @@ RUN yum remove cmake -y && \
     wget https://cmake.org/files/v3.13/cmake-${CMAKE_VERSION}.tar.gz && \
     tar -xvzf cmake-${CMAKE_VERSION}.tar.gz && \
     cd cmake-${CMAKE_VERSION} && \
-    ./bootstrap && make && make install
+    ./bootstrap && make -j4 && make install
 
 RUN pip install conan
+
+RUN rm -Rf cmake-${CMAKE_VERSION} && \
+    rm -Rf cmake-${CMAKE_VERSION}.tar.gz
