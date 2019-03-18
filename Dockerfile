@@ -9,9 +9,12 @@ RUN yum install -y iso-codes && \
     curl -O http://mirror.centos.org/centos/6/extras/x86_64/Packages/centos-release-scl-7-3.el6.centos.noarch.rpm && \
     rpm -Uvh *.rpm && \
     yum install -y devtoolset-7-gcc-c++ devtoolset-7-make devtoolset-7-build && \
-    scl enable devtoolset-7 bash && \
-    gcc --version # gcc (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5) && \
-    g++ --version # g++ (GCC) 7.3.1 20180303 (Red Hat 7.3.1-5)
+    scl enable devtoolset-7 bash
+
+ENV PATH="/opt/rh/devtoolset-7/root/usr/bin/:${PATH}"
+
+RUN gcc --version && \
+    g++ --version
 
 RUN yum remove cmake -y && \
     yum install wget -y && \
